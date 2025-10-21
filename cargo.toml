@@ -1,0 +1,47 @@
+[package]
+name = "bismillahbisa"
+version = "0.1.0"
+authors = ["dapbam"]
+edition = "2021"
+resolver = "2"
+rust-version = "1.77"
+
+[[bin]]
+name = "bismillahbisa"
+harness = false # Do not use the built-in cargo test harness -> resolves rust-analyzer errors
+
+[profile.release]
+opt-level = "s"
+
+[profile.dev]
+debug = true       # Symbols are nice and they don't increase the size on Flash
+opt-level = "z"
+
+[features]
+default = []
+experimental = ["esp-idf-svc/experimental"]
+
+[dependencies]
+log             = "0.4"
+esp-idf-svc     = "0.51"
+rand            = "0.8"
+anyhow          = "1.0"
+heapless        = "0.8"
+serde_json      = "1.0"
+dht-sensor      = "0.2"
+chrono          = { version = "0.4", features = ["clock"] }
+embedded-svc    = { version = "0.28.1" } # FIX: Disinkronkan dengan esp-idf-svc 0.51
+
+# --- Optional Embassy Integration ---
+# esp-idf-svc = { version = "0.51", features = ["critical-section", "embassy-time-driver", "embassy-sync"] }
+
+# If you enable embassy-time-driver, you MUST also add one of:
+# embassy-time = { version = "0.4.0", features = ["generic-queue-8"] }
+# embassy-executor = { version = "0.7", features = ["executor-thread", "arch-std"] }
+
+# --- Temporary workaround for embassy-executor < 0.8 ---
+# esp-idf-svc     = { version = "0.51", features = ["embassy-time-driver", "embassy-sync"] }
+# critical-section = { version = "1.1", features = ["std"], default-features = false }
+
+[build-dependencies]
+embuild = "0.33"
